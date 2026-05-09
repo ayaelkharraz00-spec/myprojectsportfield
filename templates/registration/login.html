@@ -1,0 +1,35 @@
+{% extends 'reservations/base.html' %}
+{% block title %}Login - SportField{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+      <div class="text-center mb-4">
+        <i class="bi bi-lightning-charge-fill text-success fs-1"></i>
+        <h2 class="fw-bold mt-2" style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;">Welcome Back</h2>
+        <p class="text-muted">Sign in to manage your reservations</p>
+      </div>
+      <div class="card">
+        <div class="card-body p-4">
+          <form method="post">{% csrf_token %}
+            <div class="mb-3">
+              <label for="id_username" class="form-label fw-semibold"><i class="bi bi-person me-1 text-success"></i>Username</label>
+              <input type="text" name="username" id="id_username" class="form-control" placeholder="Your username" required autofocus>
+            </div>
+            <div class="mb-4">
+              <label for="id_password" class="form-label fw-semibold"><i class="bi bi-lock me-1 text-success"></i>Password</label>
+              <input type="password" name="password" id="id_password" class="form-control" placeholder="Your password" required>
+            </div>
+            {% if form.errors %}
+            <div class="alert alert-danger small"><i class="bi bi-exclamation-circle me-1"></i>Invalid username or password.</div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary w-100 btn-lg"><i class="bi bi-box-arrow-in-right me-1"></i> Sign In</button>
+          </form>
+          <hr class="my-3">
+          <p class="text-muted small text-center mb-0">Don't have an account? <a href="{% url 'register' %}" class="text-success fw-semibold">Create one free</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

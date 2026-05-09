@@ -1,0 +1,114 @@
+{% extends 'reservations/base.html' %}
+{% block title %}SportField - Home{% endblock %}
+{% block extra_css %}
+<style>
+.hero{background:linear-gradient(135deg,#0f172a,#1a3a5c 50%,#0f3d2e);color:#fff;padding:5rem 0 4rem;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03)1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03)1px,transparent 1px);background-size:50px 50px;}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(2.8rem,6vw,5rem);font-weight:800;line-height:1.05;position:relative;}
+.hero-title .accent{color:#4ade80;}
+.hero-sub{font-size:1.1rem;color:rgba(255,255,255,.7);max-width:500px;line-height:1.6;}
+.cta{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;font-weight:700;padding:.8rem 2rem;border-radius:8px;text-decoration:none;transition:.2s;}
+.cta:hover{background:var(--green-dark);color:#fff;transform:translateY(-2px);}
+.cta2{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.8);font-weight:600;padding:.8rem 1.5rem;border-radius:8px;text-decoration:none;border:1px solid rgba(255, 255, 255, 0.25);transition:.2s;}
+.cta2:hover{background:rgba(255,255,255,.1);color:#fff;}
+.sport-pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:50px;padding:.5rem 1.2rem;font-weight:600;font-size:.9rem;color:#334155;text-decoration:none;transition:.2s;}
+.sport-pill:hover{background:var(--green-light);border-color:#86efac;color:var(--green-dark);transform:translateY(-2px);}
+</style>
+{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="container position-relative">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <p class="mb-2" style="color:#4ade80;font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;">
+          <i class="bi bi-lightning-charge-fill me-1"></i> Sports Field Booking
+        </p>
+        <h1 class="hero-title mb-3">Reserve Your <span class="accent">Perfect</span><br>Field Today</h1>
+        <p class="hero-sub mb-4">Browse available sports fields, check real-time availability, and book your slot in seconds.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{% url 'terrain_list' %}" class="cta"><i class="bi bi-grid-3x3-gap"></i> Browse Fields</a>
+          {% if not user.is_authenticated %}
+          <a href="{% url 'register' %}" class="cta2"><i class="bi bi-person-plus"></i> Create Account</a>
+          {% else %}
+          <a href="{% url 'calendar' %}" class="cta2"><i class="bi bi-calendar3"></i> View Schedule</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="row g-3">
+          <div class="col-6"><div class="stat-box"><div class="stat-num">{{ total_terrains }}</div><div class="stat-lbl">Total Fields</div></div></div>
+          <div class="col-6"><div class="stat-box"><div class="stat-num">{{ available_count }}</div><div class="stat-lbl">Available</div></div></div>
+          <div class="col-6"><div class="stat-box"><div class="stat-num">{{ total_sports }}</div><div class="stat-lbl">Sports</div></div></div>
+          <div class="col-6"><div class="stat-box"><div class="stat-num">24/7</div><div class="stat-lbl">Online Booking</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <p class="text-uppercase text-success fw-bold small mb-1" style="letter-spacing:.08em;">What we offer</p>
+    <h2 style="font-size:2rem;font-weight:800;" class="mb-4">Sports Available</h2>
+    <div class="d-flex flex-wrap gap-3">
+      {% for sport in sports %}
+      <a href="{% url 'terrain_list' %}?sport={{ sport.pk }}" class="sport-pill">
+        <i class="bi {{ sport.get_icon }} text-success fs-5"></i>
+        {{ sport.name }}
+        <span class="badge bg-light text-muted border ms-1">{{ sport.terrains.count }}</span>
+      </a>
+      {% empty %}<p class="text-muted">No sports yet – add them via the admin panel.</p>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-white border-top border-bottom">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="text-uppercase text-success fw-bold small" style="letter-spacing:.08em;">Simple process</p>
+      <h2 style="font-size:2rem;font-weight:800;">How It Works</h2>
+    </div>
+    <div class="row g-4 text-center">
+      <div class="col-md-4"><div class="p-3"><div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;"><i class="bi bi-search fs-3 text-success"></i></div><h5 class="fw-bold">1. Browse Fields</h5><p class="text-muted small">Filter by sport, surface type, or availability.</p></div></div>
+      <div class="col-md-4"><div class="p-3"><div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;"><i class="bi bi-calendar-check fs-3 text-primary"></i></div><h5 class="fw-bold">2. Pick Your Slot</h5><p class="text-muted small">Choose date, start time, and duration. No double-booking.</p></div></div>
+      <div class="col-md-4"><div class="p-3"><div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;"><i class="bi bi-trophy fs-3 text-warning"></i></div><h5 class="fw-bold">3. Play!</h5><p class="text-muted small">Show up and enjoy. Manage or cancel from your dashboard.</p></div></div>
+    </div>
+  </div>
+</section>
+
+{% if recent_reservations %}
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 style="font-size:1.8rem;font-weight:800;" class="mb-0">Recent Bookings</h2>
+      <a href="{% url 'calendar' %}" class="btn btn-outline-primary btn-sm">Full Schedule <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+    <div class="row g-3">
+      {% for res in recent_reservations %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-3">
+            <p class="fw-bold mb-1">{{ res.terrain.name }}</p>
+            <p class="text-muted small mb-1"><i class="bi bi-calendar2 me-1"></i>{{ res.date }} &nbsp;·&nbsp; <i class="bi bi-clock me-1"></i>{{ res.start_time|time:"H:i" }}</p>
+            <p class="text-muted small mb-0"><i class="bi bi-person me-1"></i>{{ res.user.username }} &nbsp;·&nbsp; {{ res.duration }}h &nbsp;·&nbsp; {{ res.terrain.sport.name }}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if not user.is_authenticated %}
+<section class="py-5" style="background:linear-gradient(135deg,#0f172a,#1a3a5c);">
+  <div class="container text-center text-white">
+    <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:800;">Ready to Play?</h2>
+    <p class="text-white-50 mb-4">Create a free account and start booking fields today.</p>
+    <a href="{% url 'register' %}" class="cta me-2"><i class="bi bi-person-plus"></i> Create Account</a>
+    <a href="{% url 'login' %}" class="cta2"><i class="bi bi-box-arrow-in-right"></i> Sign In</a>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

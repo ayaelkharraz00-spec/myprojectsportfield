@@ -1,0 +1,87 @@
+{% extends 'reservations/base.html' %}
+{% block title %}{{ terrain.name }} - SportField{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb mb-2" style="--bs-breadcrumb-divider-color:rgba(255,255,255,.4);">
+      <li class="breadcrumb-item"><a href="{% url 'terrain_list' %}" class="text-white-50 text-decoration-none">Fields</a></li>
+      <li class="breadcrumb-item active text-white">{{ terrain.name }}</li>
+    </ol></nav>
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <h1>{{ terrain.name }}</h1>
+      {% if terrain.availability %}<span class="badge-ok fs-6"><i class="bi bi-check-circle-fill me-1"></i>Available</span>
+      {% else %}<span class="badge-no fs-6"><i class="bi bi-x-circle-fill me-1"></i>Unavailable</span>{% endif %}
+    </div>
+    <p>{{ terrain.sport.name }} &nbsp;·&nbsp; {{ terrain.get_surface_emoji }} {{ terrain.get_surface_type_display }}</p>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card mb-4">
+        <div class="card-header"><i class="bi bi-info-circle text-success me-2"></i>Field Details</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-6"><p class="text-muted small mb-1">Sport</p><p class="fw-semibold mb-0"><i class="bi {{ terrain.sport.get_icon }} text-success me-1"></i>{{ terrain.sport.name }}</p></div>
+            <div class="col-6"><p class="text-muted small mb-1">Surface</p><p class="fw-semibold mb-0">{{ terrain.get_surface_emoji }} {{ terrain.get_surface_type_display }}</p></div>
+            <div class="col-6"><p class="text-muted small mb-1">Capacity</p><p class="fw-semibold mb-0"><i class="bi bi-people me-1 text-success"></i>{{ terrain.sport.max_capacity }} players</p></div>
+            <div class="col-6"><p class="text-muted small mb-1">Status</p>
+              {% if terrain.availability %}<p class="fw-semibold mb-0 text-success"><i class="bi bi-check-circle-fill me-1"></i>Open for bookings</p>
+              {% else %}<p class="fw-semibold mb-0 text-danger"><i class="bi bi-x-circle-fill me-1"></i>Temporarily closed</p>{% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><i class="bi bi-calendar3 text-success me-2"></i>Upcoming Reservations <span class="badge bg-secondary ms-1">{{ upcoming_reservations|length }}</span></div>
+        <div class="card-body p-0">
+          {% if upcoming_reservations %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light"><tr><th>Date</th><th>Start</th><th>Duration</th><th>End</th><th>By</th></tr></thead>
+              <tbody>
+                {% for res in upcoming_reservations %}
+                <tr {% if res.date == today %}class="table-warning"{% endif %}>
+                  <td>{{ res.date }}{% if res.date == today %}<span class="badge bg-warning text-dark ms-1">Today</span>{% endif %}</td>
+                  <td>{{ res.start_time|time:"H:i" }}</td>
+                  <td>{{ res.duration }}h</td>
+                  <td>{{ res.get_end_time|time:"H:i" }}</td>
+                  <td><i class="bi bi-person-circle me-1 text-muted"></i>{{ res.user.username }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-center py-4 text-muted"><i class="bi bi-calendar-x fs-2 mb-2 d-block"></i>No upcoming reservations – this field is free!</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card border-success border-opacity-50 sticky-top" style="top:20px;">
+        <div class="card-header bg-success bg-opacity-10 text-success fw-bold"><i class="bi bi-bookmark-plus me-2"></i>Make a Reservation</div>
+        <div class="card-body">
+          {% if not terrain.availability %}
+          <div class="alert alert-danger mb-0"><i class="bi bi-exclamation-circle me-1"></i>This field is currently closed.</div>
+          {% elif not user.is_authenticated %}
+          <div class="text-center py-3">
+            <i class="bi bi-lock fs-2 text-muted mb-3 d-block"></i>
+            <p class="text-muted mb-3">Login required to book.</p>
+            <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary w-100 mb-2"><i class="bi bi-box-arrow-in-right me-1"></i> Login to Book</a>
+            <a href="{% url 'register' %}" class="btn btn-outline-secondary w-100"><i class="bi bi-person-plus me-1"></i> Create Account</a>
+          </div>
+          {% else %}
+          <p class="text-muted small mb-3">Ready to play? Select your time slot.</p>
+          <a href="{% url 'make_reservation' terrain.pk %}" class="btn btn-primary btn-lg w-100"><i class="bi bi-calendar-plus me-2"></i>Book This Field</a>
+          <p class="text-muted text-center mt-3 small"><i class="bi bi-shield-check me-1 text-success"></i>Instant confirmation · No double-booking</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

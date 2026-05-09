@@ -1,0 +1,60 @@
+{% extends 'reservations/base.html' %}
+{% block title %}Browse Fields - SportField{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-grid-3x3-gap me-2"></i>Sports Fields</h1>
+    <p>{{ count }} field{{ count|pluralize }} found</p>
+  </div>
+</div>
+<div class="container pb-5">
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="get">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4"><label class="form-label fw-semibold small text-muted"><i class="bi bi-search me-1"></i>Search</label>{{ form.search }}</div>
+          <div class="col-md-3"><label class="form-label fw-semibold small text-muted"><i class="bi bi-trophy me-1"></i>Sport</label>{{ form.sport }}</div>
+          <div class="col-md-3"><label class="form-label fw-semibold small text-muted"><i class="bi bi-circle me-1"></i>Availability</label>{{ form.availability }}</div>
+          <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-grow-1"><i class="bi bi-funnel"></i> Filter</button>
+            <a href="{% url 'terrain_list' %}" class="btn btn-outline-secondary" title="Clear"><i class="bi bi-x-lg"></i></a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {% if terrains %}
+  <div class="row g-4">
+    {% for terrain in terrains %}
+    <div class="col-sm-6 col-lg-4">
+      <div class="card h-100">
+        <div class="card-sport-top {% if not terrain.availability %}unavail{% endif %}">
+          <i class="bi {{ terrain.sport.get_icon }}"></i>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h5 class="fw-bold mb-0">{{ terrain.name }}</h5>
+            {% if terrain.availability %}<span class="badge-ok"><i class="bi bi-check-circle-fill me-1"></i>Available</span>
+            {% else %}<span class="badge-no"><i class="bi bi-x-circle-fill me-1"></i>Unavailable</span>{% endif %}
+          </div>
+          <p class="text-muted small mb-1"><i class="bi bi-trophy me-1 text-success"></i><strong>Sport:</strong> {{ terrain.sport.name }}</p>
+          <p class="text-muted small mb-1"><span class="me-1">{{ terrain.get_surface_emoji }}</span><strong>Surface:</strong> {{ terrain.get_surface_type_display }}</p>
+          <p class="text-muted small mb-3"><i class="bi bi-people me-1 text-success"></i><strong>Capacity:</strong> {{ terrain.sport.max_capacity }} players</p>
+          <div class="mt-auto">
+            <a href="{% url 'terrain_detail' terrain.pk %}" class="btn btn-primary w-100"><i class="bi bi-eye me-1"></i> View & Book</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-5">
+    <i class="bi bi-search fs-1 text-muted"></i>
+    <h4 class="mt-3 text-muted">No fields found</h4>
+    <a href="{% url 'terrain_list' %}" class="btn btn-outline-primary mt-2"><i class="bi bi-arrow-counterclockwise me-1"></i> Clear Filters</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

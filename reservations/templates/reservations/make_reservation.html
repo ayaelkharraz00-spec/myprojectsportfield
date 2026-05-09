@@ -1,0 +1,70 @@
+{% extends 'reservations/base.html' %}
+{% block title %}Book {{ terrain.name }} - SportField{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb mb-2" style="--bs-breadcrumb-divider-color:rgba(255,255,255,.4);">
+      <li class="breadcrumb-item"><a href="{% url 'terrain_list' %}" class="text-white-50 text-decoration-none">Fields</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'terrain_detail' terrain.pk %}" class="text-white-50 text-decoration-none">{{ terrain.name }}</a></li>
+      <li class="breadcrumb-item active text-white">Book</li>
+    </ol></nav>
+    <h1><i class="bi bi-calendar-plus me-2"></i>Book {{ terrain.name }}</h1>
+    <p>{{ terrain.sport.name }} &nbsp;·&nbsp; {{ terrain.get_surface_emoji }} {{ terrain.get_surface_type_display }}</p>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+      <div class="card">
+        <div class="card-header"><i class="bi bi-bookmark-plus text-success me-2"></i>Reservation Details</div>
+        <div class="card-body p-4">
+          <div class="alert d-flex align-items-center gap-3 mb-4" style="background:#f0fdf4;border:1px solid #bbf7d0;">
+            <i class="bi {{ terrain.sport.get_icon }} fs-3 text-success"></i>
+            <div><p class="fw-semibold mb-0">{{ terrain.name }}</p><p class="small text-muted mb-0">{{ terrain.sport.name }} &nbsp;·&nbsp; {{ terrain.get_surface_emoji }} {{ terrain.get_surface_type_display }}</p></div>
+          </div>
+
+          <form method="post">{% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label fw-semibold"><i class="bi bi-calendar2 me-1 text-success"></i>Date *</label>
+              {{ form.date }}
+              {% if form.date.errors %}<div class="text-danger small mt-1">{{ form.date.errors|join:", " }}</div>{% endif %}
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold"><i class="bi bi-clock me-1 text-success"></i>Start Time *</label>
+              {{ form.start_time }}
+              {% if form.start_time.errors %}<div class="text-danger small mt-1">{{ form.start_time.errors|join:", " }}</div>{% endif %}
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-semibold"><i class="bi bi-hourglass-split me-1 text-success"></i>Duration *</label>
+              {{ form.duration }}
+              {% if form.duration.errors %}<div class="text-danger small mt-1">{{ form.duration.errors|join:", " }}</div>{% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-1"></i>{{ form.non_field_errors|join:" " }}</div>
+            {% endif %}
+
+            <div class="alert alert-light border small mb-4"><i class="bi bi-person-check me-1 text-success"></i>Booking as <strong>{{ user.username }}</strong></div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-check-lg me-1"></i> Confirm Reservation</button>
+              <a href="{% url 'terrain_detail' terrain.pk %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Back</a>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="card mt-3 border-0 bg-light">
+        <div class="card-body small text-muted">
+          <p class="fw-semibold mb-1 text-dark"><i class="bi bi-lightbulb me-1 text-warning"></i>Tips</p>
+          <ul class="mb-0 ps-3">
+            <li>Reservations can be 1-4 hours long.</li>
+            <li>You cannot book a slot in the past.</li>
+            <li>Overlapping bookings are automatically rejected.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
