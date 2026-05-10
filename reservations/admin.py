@@ -1,6 +1,4 @@
-"""
-reservations/admin.py  –  Register all models with the admin panel
-"""
+
 from django.contrib import admin
 from .models import Sport, Terrain, Reservation
 

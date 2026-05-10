@@ -1,7 +1,4 @@
-"""
-python manage.py seed_data
-Populates the database with demo sports, fields, users, and reservations.
-"""
+
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from reservations.models import Sport, Terrain, Reservation

@@ -1,7 +1,4 @@
-"""
-reservations/models.py  –  Sport, Terrain, Reservation
-Your original models kept intact + added helper methods and created_at.
-"""
+
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -9,7 +6,6 @@ from django.core.exceptions import ValidationError
 from datetime import timedelta, datetime
 
 
-# ── Sport ──────────────────────────────────────────────────────────────────────
 class Sport(models.Model):
     name         = models.CharField(max_length=100)
     max_capacity = models.IntegerField()
@@ -31,7 +27,6 @@ class Sport(models.Model):
         return self.name
 
 
-# ── Terrain ────────────────────────────────────────────────────────────────────
 class Terrain(models.Model):
     SURFACE_CHOICES = [
         ('gazon',        'Gazon (Natural Grass)'),

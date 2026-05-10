@@ -25,7 +25,7 @@
           <i class="bi bi-lightning-charge-fill me-1"></i> Sports Field Booking
         </p>
         <h1 class="hero-title mb-3">Reserve Your <span class="accent">Perfect</span><br>Field Today</h1>
-        <p class="hero-sub mb-4">Browse available sports fields, check real-time availability, and book your slot in seconds.</p>
+        <p class="hero-sub mb-4">Browse available for sports fields, check realtime availability, and book your spot in seconds.</p>
         <div class="d-flex flex-wrap gap-3">
           <a href="{% url 'terrain_list' %}" class="cta"><i class="bi bi-grid-3x3-gap"></i> Browse Fields</a>
           {% if not user.is_authenticated %}
@@ -58,7 +58,7 @@
         {{ sport.name }}
         <span class="badge bg-light text-muted border ms-1">{{ sport.terrains.count }}</span>
       </a>
-      {% empty %}<p class="text-muted">No sports yet – add them via the admin panel.</p>{% endfor %}
+      {% empty %}<p class="text-muted">No sports yet , add them via the admin panel</p>{% endfor %}
     </div>
   </div>
 </section>
